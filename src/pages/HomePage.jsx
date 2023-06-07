@@ -21,7 +21,7 @@ const HomePage = () => {
   //creating a joinroom requirement and direction function
   const joinRoom = (e) => {
     if(!roomid || !username){
-      toast.error("RoomId and Username must be provided");
+      toast.error("Kindly fill all the required fields");
       return;
     }
     navigate(`/editor/${roomid}`,{
@@ -48,10 +48,12 @@ const HomePage = () => {
           <input type="text" value={roomid} onChange={(e) => setRoomid(e.target.value)} className="inputbox" placeholder='ROOM ID' onKeyUp={handleInputEnter} />
 
           <input type="text" value={username} onChange={(e) => setUsername(e.target.value)} className="inputbox" placeholder='USER NAME' onKeyUp={handleInputEnter} />
+
           <button onClick={joinRoom} className="btn Joinbtn">Join</button>
+
         </div>
         <span className="info">
-          If you do not have any invite then create &nbsp; 
+          Create Random Room and enjoy coding&nbsp; 
           <button onClick={createNewRoom} className="btn createNewRoomBtn">New Room</button>
         </span>
       </div>

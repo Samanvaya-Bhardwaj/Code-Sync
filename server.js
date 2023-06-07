@@ -1,13 +1,22 @@
 const express = require('express');
 const app = express();
 const http = require('http');
+const path = require('path')
 const {Server} = require('socket.io');
 const ACTION = require('./src/Action');
+
 
 const server = http.createServer(app);
 const io = new Server(server);
 
+
+app.use(express.static('build'));
+app.use((req,res, next)=>{
+    res.sendFile(path.join(__dirname,"build", 'index.html'))
+})
+
 const userSocketMap = {};
+
 
 function getAllConnectedClients(roomId){
     return Array.from(io.sockets.adapter.rooms.get(roomId) || []).map((socketId) => {
@@ -17,6 +26,8 @@ function getAllConnectedClients(roomId){
         };
     })
 }
+
+
 
 io.on('connection', (socket) => {
     console.log('connection established socket connected ', socket.id);
@@ -36,6 +47,7 @@ io.on('connection', (socket) => {
     });
 
 
+
     //syncing code editor
     socket.on(ACTION.CODE_CHANGE, ({roomId, code})=> {
         socket.in(roomId).emit(ACTION.CODE_CHANGE, {code});
@@ -44,6 +56,7 @@ io.on('connection', (socket) => {
     socket.on(ACTION.SYNC_CODE, ({socketId, code})=> {
         io.to(socketId).emit(ACTION.CODE_CHANGE, {code});
     })
+
 
     
     socket.on('disconnecting', ()=> {
@@ -57,9 +70,8 @@ io.on('connection', (socket) => {
         delete userSocketMap[socket.id];
         socket.leave();
     });
-
-
 });
+
 
 const PORT = process.env.PORT || 5000;
 server.listen(PORT, () => console.log('listening on port '+ PORT));

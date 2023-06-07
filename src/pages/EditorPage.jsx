@@ -6,6 +6,7 @@ import ACTION from '../Action'
 import { initSocket } from '../socket';
 import { useLocation, useNavigate, Navigate, useParams } from 'react-router-dom';
 
+
 const EditorPage = () => {
 
   const socketRef = useRef(null);
@@ -14,6 +15,7 @@ const EditorPage = () => {
   const { roomId } = useParams();
   const [ clients, setClients ] = useState([]);
   const codeRef = useRef(null);
+
 
 
   function copyRoomId(){
@@ -28,9 +30,12 @@ const EditorPage = () => {
     }
   }
 
+
   function leaveRoom() {
     reactNavigator('/');
   }
+
+
 
   useEffect(() => {
     const init = async() => {
@@ -39,16 +44,22 @@ const EditorPage = () => {
       socketRef.current.on('connect_error', (err) => handleErrors(err));
       socketRef.current.on('connect_failed', (err) => handleErrors(err));
 
+
+
       function handleErrors(e) {
           console.log('socket error', e);
           toast.error('Socket connection failed, try again later.');
           reactNavigator('/');
       }
 
+
+
       socketRef.current.emit(ACTION.JOIN,{
         roomId,
         username : location.state?.username,
       });
+
+      
 
       //listenening for joined events
       socketRef.current.on(ACTION.JOINED, ({clients,username,socketId}) => {
@@ -62,6 +73,8 @@ const EditorPage = () => {
           socketId,
         })
       })
+
+
 
 
       //sync code functionality
@@ -80,16 +93,15 @@ const EditorPage = () => {
     }
     init();
     //for cleaning 
-    return() => {
-      socketRef.current.disconnect();
-      socketRef.current.off(ACTION.DISCONNECTED);
-      socketRef.current.off(ACTION.JOINED);
-      // socketRef.current.off(ACTION.JOIN);
-
-    }
-  },[])
 
 
+  return () => {
+    socketRef.current.disconnect();
+    socketRef.current.off(ACTION.DISCONNECTED);
+    socketRef.current.off(ACTION.JOINED);
+    // socketRef.current.off(ACTION.JOIN);
+  };
+}, [location.state?.username, reactNavigator, roomId]);
   
   
 
@@ -107,7 +119,7 @@ const EditorPage = () => {
             <div className='logo'>
               <img className='logoImage' src="/code-sync.png" alt="" />
             </div>
-            <h3>Connected</h3>
+            <h3>Playground Activated</h3>
             <div className='clientList'>
               {
                 clients.map(client => <Client 

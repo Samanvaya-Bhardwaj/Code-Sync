@@ -8,11 +8,11 @@ function App() {
   return (
     <>
       <div>
-        <Toaster position="top-right"
+        <Toaster position="top-center"
                  toastOptions={{
                   success : {
                     iconTheme : {
-                      primary : '#4aed88',
+                      primary : 'orange',
                     },
                   },
                  }}  />  
@@ -26,6 +26,6 @@ function App() {
 
     </>
   );
-}
+} 
 
 export default App;

@@ -21,6 +21,7 @@ const Editor = ({socketRef, roomId, oncodechange}) => {
                 autoCloseBrackets: true,
                 lineNumbers: true,
             })
+
             
             //sync code startup
             editorRef.current.on('change',(instance,changes) => {
@@ -44,6 +45,7 @@ const Editor = ({socketRef, roomId, oncodechange}) => {
         init();
     },[])
 
+
     useEffect(() => {
         if (socketRef.current) {
             socketRef.current.on(ACTION.CODE_CHANGE, ({ code }) => {
@@ -53,12 +55,14 @@ const Editor = ({socketRef, roomId, oncodechange}) => {
             });
         }
 
+
         return () => {
             socketRef.current.off(ACTION.CODE_CHANGE);
         };
     }, [socketRef.current]);
 
 
+    
     return <textarea id="realtimeEditor"></textarea>;
 };
 
